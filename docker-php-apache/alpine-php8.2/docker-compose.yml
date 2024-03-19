@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+    app:
+        build:
+            args:
+                user: ${USER:-1000}
+                uid: ${UID:-1000}
+            context: ./
+            dockerfile: Dockerfile
+        image: alpine-php82
+        container_name:  alpine-php82
+        restart: unless-stopped
+        volumes:
+            - ./.env:/var/www/html/.env
+            - ./docker/apache2/httpd.conf:/usr/local/apache2/conf/httpd.conf
+            # Logs storage and apache error log mount to external storage
+            - ../log/laravel/:/var/www/html/storage/logs
+            - ../log/:/var/log/apache2/
+        ports:
+            - "80:80"
+            - "443:443"
