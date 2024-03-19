@@ -1,6 +1,6 @@
 ## Alpine Apache + PHP 8.2 + Mysql (MariaDB)
 
-This is configuration for running PHP 8.2 configured for Laravel 10 usage with Redis configured
+This is configuration for running PHP 8.2 configured for Laravel 10 usage with Redis
 
 
 ## Files
