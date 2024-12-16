@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+    elasticsearch:
+        image: elasticsearch:${ELK_VERSION}
+        container_name: elastic
+        restart: unless-stopped
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        volumes:
+            - ./data/elastic:/usr/share/elastic/data/
+            - ./docker/elastic/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        environment:
+            - discovery.type=single-node
+            - http.host=0.0.0.0
+            - transport.host=0.0.0.0
+            - xpack.security.enabled=false
+            - xpack.profiling.enabled=false
+            - cluster.name=elasticsearch
+            - bootstrap.memory_lock=true
+        networks:
+            - elk
+
+    kibana:
+        image: kibana:${ELK_VERSION}
+        container_name: kibana
+        restart: unless-stopped
+        ports:
+            - "5601:5601"
+        volumes:
+            - ./docker/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+            - ./data/kibana:/usr/share/kibana/data
+        networks:
+            - elk
+        depends_on:
+            - elasticsearch
+
+    logstash:
+        image: logstash:${ELK_VERSION}
+        container_name: logstash
+        restart: unless-stopped
+        ports:
+            - "5044:5044"
+            - "9600:9600"
+        volumes:
+            - ./docker/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+            - ./docker/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+            - ./data/logstash:/usr/share/logstash/data
+
+        networks:
+            - elk
+        depends_on:
+            - elasticsearch
+
+networks:
+    elk:
+        driver: bridge
