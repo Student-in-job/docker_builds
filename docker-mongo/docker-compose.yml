@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+    app:
+        image: mongo:${MONGO_VERSION}
+        container_name: mongoDB
+        restart: unless-stopped
+        ports:
+            - "27017:27017"
+        volumes:
+            - ./data/elastic:/usr/share/elastic/data/
